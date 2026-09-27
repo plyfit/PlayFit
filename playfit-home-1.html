@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PlayFit: Game top-up and fitness</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F3F6FB;--panel:#fff;--ink:#0F1630;--mute:#55607D;--cyan:#0A8FB5;--hot:#D9480F;--line:#D8DFEE;--on:#fff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0B1024;--panel:#141B36;--ink:#EAF0FF;--mute:#93A0C4;--cyan:#35D0F5;--hot:#FF7A3D;--line:#263056;--on:#0B1024}}
+:root[data-theme="dark"]{--bg:#0B1024;--panel:#141B36;--ink:#EAF0FF;--mute:#93A0C4;--cyan:#35D0F5;--hot:#FF7A3D;--line:#263056;--on:#0B1024}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+h1,h2,h3,.logo{font-family:"Chakra Petch",system-ui,sans-serif;line-height:1.15;margin:0}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;justify-content:space-between;height:60px;gap:12px}
+.logo{font-weight:700;font-size:22px}.logo span{color:var(--hot)}
+.btn{display:inline-block;border:0;border-radius:8px;padding:11px 18px;font:700 15px "Chakra Petch",system-ui,sans-serif;background:var(--cyan);color:var(--on);cursor:pointer}
+.btn.alt{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.menu{display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none}
+.menu button{flex:none;border:1.5px solid var(--line);background:var(--panel);color:var(--mute);border-radius:999px;padding:8px 16px;font:700 14px "Chakra Petch",system-ui,sans-serif;cursor:pointer}
+.menu button[aria-current="page"]{background:var(--hot);border-color:var(--hot);color:var(--on)}
+.view{display:none}.view.on{display:block}
+.hero{display:grid;gap:32px;padding:44px 0 36px;grid-template-columns:1fr}
+@media(min-width:900px){.hero{grid-template-columns:1.05fr .95fr;align-items:center;padding:72px 0 56px}}
+h1{font-size:clamp(34px,7vw,58px);font-weight:700}
+h1 .t{color:var(--hot)}
+.lead{color:var(--mute);max-width:46ch;margin:18px 0 22px;font-size:17px}
+.trust{display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:0;list-style:none}
+.trust li{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:5px 12px;font-size:14px;color:var(--mute)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--bg);padding:5px;border-radius:10px;margin-bottom:16px}
+.tab{border:0;border-radius:7px;padding:10px;font:700 15px "Chakra Petch",system-ui,sans-serif;background:transparent;color:var(--mute);cursor:pointer}
+.tab[aria-selected="true"]{background:var(--cyan);color:var(--on)}
+label{display:block;font-size:14px;color:var(--mute);margin-bottom:6px}
+input{width:100%;padding:12px;border-radius:8px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);font:16px system-ui,sans-serif}
+.packs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0}
+.pack{border:1.5px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;padding:12px 8px;text-align:left;cursor:pointer;font:inherit}
+.pack b{display:block;font-family:"Chakra Petch",system-ui,sans-serif;font-size:17px}
+.pack span{color:var(--mute);font-size:14px}
+.pack[aria-pressed="true"]{border-color:var(--cyan);box-shadow:0 0 0 2px var(--cyan) inset}
+.buy{width:100%;padding:14px}
+#msg{min-height:22px;font-size:14px;margin:10px 0 0;color:var(--mute)}
+.note{font-size:13px;color:var(--mute);margin:6px 0 0}
+section{padding:44px 0}
+h2{font-size:clamp(26px,4.5vw,36px);margin-bottom:8px}
+.sub{color:var(--mute);margin:0 0 24px;max-width:56ch}
+.goals{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+button.goal{text-align:left;font:inherit;color:inherit;cursor:pointer;width:100%}
+.goal{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--hot);border-radius:10px;padding:16px}
+.goal h3{font-size:18px}.goal p{margin:4px 0 0;color:var(--mute);font-size:14px}
+.ex{cursor:default;margin-bottom:10px;display:flex;gap:12px;align-items:center;padding:12px}
+.ex .ph{flex:none;width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--cyan),var(--hot));display:flex;align-items:center;justify-content:center;font-size:26px}
+.ex .info h3{font-size:17px}.ex .info p{margin:2px 0 0;color:var(--mute);font-size:14px}
+.ex .days{margin-left:auto;flex:none;text-align:right;font-size:13px;color:var(--mute)}
+.ex .days b{display:block;font:700 18px "Chakra Petch",system-ui,sans-serif;color:var(--ink)}
+.why{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.why div{border-top:3px solid var(--cyan);padding:14px 0}
+.why h3{font-size:18px;margin-bottom:4px}.why p{margin:0;color:var(--mute);font-size:15px}
+.tour{display:grid;gap:20px}
+@media(min-width:800px){.tour{grid-template-columns:1fr 1fr;align-items:center}}
+.tbl{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line)}
+th{color:var(--mute);font-weight:500}
+.pm{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0}
+.big{font:700 34px "Chakra Petch",system-ui,sans-serif;margin-bottom:14px}
+#txl div{padding:6px 0;border-bottom:1px solid var(--line)}
+.ex .ph{background:none;color:var(--ink)}
+.linkish{background:none;border:0;color:var(--cyan);font:inherit;font-weight:700;cursor:pointer;padding:0;text-decoration:underline}
+.pline{font-size:14px;color:var(--mute);margin-top:14px}
+.authcard{max-width:400px;margin:0 auto}
+.authcard h2{margin-bottom:4px}
+.gbtn{width:100%;border:1.5px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:11px;font:700 15px system-ui,sans-serif;cursor:pointer;margin-bottom:10px}
+.who{font-size:13px;color:var(--mute)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px}
+.stat{font-size:14px;color:var(--mute)}.stat b{display:block;font:700 24px "Chakra Petch",system-ui,sans-serif;color:var(--ink)}
+.prow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:6px 0}.prow input{width:110px}
+select{padding:6px;border-radius:6px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);font:inherit}
+.field{margin-bottom:12px}
+.lockmsg{color:var(--mute);font-size:15px}
+footer{border-top:1px solid var(--line);padding:28px 0;color:var(--mute);font-size:14px}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header><div class="wrap bar">
+<a class="logo" href="#">Play<span>Fit</span></a>
+<button class="btn alt" id="loginBtn">Log in</button>
+</div>
+<nav class="menu wrap" id="menu" aria-label="Sections"><button data-v="topup" aria-current="page">Top-up</button><button data-v="fitness">Fitness</button><button data-v="tour">Tournaments</button><button data-v="why">Why PlayFit</button><button data-v="wallet">Wallet</button><button data-v="admin" id="adminTab" style="display:none">Admin</button></nav>
+</header>
+
+<main class="wrap">
+<div class="view on" id="v-topup"><div class="hero">
+<div>
+<h1>Top up your game. <span class="t">Train your body.</span></h1>
+<p class="lead">Instant PUBG and Free Fire top-up, plus free workout plans for six pack, muscle and fat loss. One account for both.</p>
+<ul class="trust"><li>Instant delivery</li><li>bKash, Nagad, card</li><li>24/7 support</li></ul>
+</div>
+<div class="card">
+<div class="tabs" role="tablist">
+<button class="tab" role="tab" id="t-pubg" aria-selected="true">PUBG Mobile</button>
+<button class="tab" role="tab" id="t-ff" aria-selected="false">Free Fire</button>
+</div>
+<label for="uid">Player ID</label>
+<input id="uid" inputmode="numeric" placeholder="Enter your player ID" autocomplete="off">
+<div class="packs" id="packs"></div>
+<button class="btn buy" id="buy">Choose a pack</button>
+<p id="msg" role="status"></p>
+<p class="note">Sample prices. Payment is not connected yet.</p>
+</div>
+</div></div>
+
+<section class="view" id="v-fitness">
+<h2>Workouts for your goal</h2>
+<p class="sub">Pick a goal and follow a plan with photos, sets and reps. No gym needed to start.</p>
+<div class="goals">
+<button class="goal" data-g="0"><h3>Six pack</h3><p>Abs plans with diet tips</p></button>
+<button class="goal" data-g="1"><h3>Build muscle</h3><p>Chest, arms, back, legs</p></button>
+<button class="goal" data-g="2"><h3>Lose fat</h3><p>Burn plans for beginners</p></button>
+<button class="goal" data-g="3"><h3>Stretching</h3><p>Fix stiffness and posture</p></button>
+<button class="goal" data-g="4"><h3>Home workout</h3><p>No equipment needed</p></button>
+<button class="goal" data-g="5"><h3>Gamer fitness</h3><p>Eyes, wrists and back</p></button>
+</div>
+</section>
+
+<section class="view" id="v-goal"><button class="btn alt" id="back">Back to Fitness</button>
+<h2 id="gt" style="margin-top:16px"></h2><p class="sub" id="gtip"></p><div id="gl"></div></section>
+
+<section class="view" id="v-why">
+<h2>Why players trust PlayFit</h2>
+<p class="sub">Built to be safe for every user.</p>
+<div class="why">
+<div><h3>Player ID check</h3><p>We show your ID before you pay, so top-up never goes to the wrong account.</p></div>
+<div><h3>Official supply</h3><p>Every order comes from authorized channels, so your account stays safe.</p></div>
+<div><h3>Secure payment</h3><p>We never store your card details. Payments go through trusted gateways.</p></div>
+<div><h3>Real support</h3><p>Chat with our team any time if an order is late or wrong.</p></div>
+</div>
+</section>
+
+<section class="view" id="v-tour">
+<div class="tour">
+<div>
+<h2>Weekly tournaments</h2>
+<p class="sub">Join a PUBG or Free Fire room, win prizes and climb the leaderboard.</p>
+<a class="btn" href="#">See upcoming matches</a>
+</div>
+<div class="card tbl" id="tourWrap">
+<table><tr><th>Rank</th><th>Player</th><th>Points</th></tr><tbody id="lbBody"></tbody></table>
+<p class="note">Sample data</p>
+</div>
+</div>
+</section>
+
+<section class="view" id="v-wallet"><h2>Wallet</h2><p class="sub">Add money once, then top up in one tap.</p>
+<div class="card"><label>Balance</label><div class="big" id="bal">৳0</div>
+<label for="amt">Amount to add</label><input id="amt" inputmode="numeric" placeholder="e.g. 500">
+<div class="pm" id="pm"><button class="pack" aria-pressed="true">bKash</button><button class="pack" aria-pressed="false">Nagad</button><button class="pack" aria-pressed="false">Card</button></div>
+<div id="mfscash"><p class="note">Send money to 01700-000000 (Personal), then enter the transaction ID here.</p>
+<div class="field"><label for="txnid">Transaction ID</label><input id="txnid" placeholder="e.g. 8N7K2X4Q1P"></div></div>
+<div id="mfscard" style="display:none">
+<div class="field"><label for="cnum">Card number</label><input id="cnum" inputmode="numeric" placeholder="1234 5678 9012 3456" maxlength="19"></div>
+<div class="field" style="display:flex;gap:10px"><div style="flex:1"><label for="cexp">Expiry</label><input id="cexp" placeholder="MM/YY" maxlength="5"></div><div style="flex:1"><label for="ccvc">CVC</label><input id="ccvc" inputmode="numeric" placeholder="123" maxlength="4"></div></div>
+<p class="note">Demo only: never enter a real card number here. A live site should use a licensed gateway (e.g. SSLCommerz, Stripe) so raw card numbers never touch your own server.</p>
+</div>
+<button class="btn buy" id="addm">Add money</button><p class="note" id="wmsg" role="status"></p></div>
+<h3>History</h3><div class="card" id="txl">No transactions yet.</div></section>
+
+<section class="view" id="v-auth">
+<div class="card authcard">
+<div id="loginForm">
+<h2>Log in</h2><p class="sub">Use your email to continue.</p>
+<button class="gbtn" id="googleBtn">Continue with Google</button>
+<div class="field"><label for="lEmail">Email</label><input id="lEmail" type="email" placeholder="you@gmail.com"></div>
+<div class="field"><label for="lPass">Password</label><input id="lPass" type="password" placeholder="Password"></div>
+<button class="btn buy" id="doLogin">Log in</button>
+<p id="lMsg" class="note" role="status"></p>
+<p class="pline">Don't have an account? <button class="linkish" id="toSignup">Create new account</button></p>
+</div>
+<div id="signupForm" style="display:none">
+<h2>Create account</h2><p class="sub">Sign up with your email.</p>
+<div class="field"><label for="sName">Name</label><input id="sName" placeholder="Your name"></div>
+<div class="field"><label for="sEmail">Email</label><input id="sEmail" type="email" placeholder="you@gmail.com"></div>
+<div class="field"><label for="sPass">Password</label><input id="sPass" type="password" placeholder="At least 6 characters"></div>
+<button class="btn buy" id="doSignup">Create account</button>
+<p id="sMsg" class="note" role="status"></p>
+<p class="pline">Already have an account? <button class="linkish" id="toLogin">Log in</button></p>
+</div>
+</div>
+</section>
+
+<section class="view" id="v-admin"><h2>Admin panel</h2>
+<div id="adminLocked"><p class="lockmsg">Staff only. Log in with an admin account to see this page.</p></div>
+<div id="adminBody" style="display:none">
+<p class="sub">Demo view. A real deployment needs this behind a server-side login, not just a client check.</p>
+<div class="stats" id="stats"></div>
+<h3>Orders</h3><div class="card tbl" id="ord">No orders yet.</div>
+<h3>Prices</h3><div class="card" id="prc"></div>
+<h3>Tournament leaderboard</h3><div class="card" id="lbAdmin"></div>
+<h3>Fitness content</h3><div id="fitAdmin"></div>
+</div>
+</section>
+</main>
+
+<footer><div class="wrap">PlayFit is a working name. Not affiliated with PUBG Mobile or Garena Free Fire.</div></footer>
+
+<script>
+var DATA={pubg:{n:"UC",p:[[60,90],[325,450],[660,900],[1800,2250]]},ff:{n:"Diamonds",p:[[100,85],[310,260],[520,430],[1060,860]]}};
+var game="pubg",sel=null,bal=0,tx=[],orders=[["1001","PUBG","660 UC","Demo1234",900,"Pending"]],pay="bKash",user=null,views=["topup","fitness","goal","tour","why","wallet","auth","admin"];
+var $=function(i){return document.getElementById(i)};
+var packs=$("packs"),buy=$("buy"),msg=$("msg"),uid=$("uid");
+function money(n){return"৳"+n}
+function render(){
+packs.innerHTML="";sel=null;buy.textContent="Choose a pack";msg.textContent="";
+DATA[game].p.forEach(function(x,i){
+var b=document.createElement("button");b.className="pack";b.setAttribute("aria-pressed","false");
+b.innerHTML="<b>"+x[0]+" "+DATA[game].n+"</b><span>"+money(x[1])+"</span>";
+b.onclick=function(){sel=i;[].forEach.call(packs.children,function(c){c.setAttribute("aria-pressed","false")});b.setAttribute("aria-pressed","true");buy.textContent="Buy for "+money(x[1]);msg.textContent=""};
+packs.appendChild(b)})}
+function tab(g){game=g;$("t-pubg").setAttribute("aria-selected",g==="pubg");$("t-ff").setAttribute("aria-selected",g==="ff");render()}
+$("t-pubg").onclick=function(){tab("pubg")};
+$("t-ff").onclick=function(){tab("ff")};
+function show(v){views.forEach(function(k){$("v-"+k).classList.toggle("on",k===v)});
+[].forEach.call($("menu").children,function(b){if(b.getAttribute("data-v")===v)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
+window.scrollTo(0,0);if(v==="wallet")drawWallet();if(v==="admin")drawAdmin();if(v==="tour")drawLB()}
+$("menu").onclick=function(e){var v=e.target.getAttribute("data-v");if(v)show(v)};
+$("loginBtn").onclick=function(){if(user){user=null;refreshAuthUI();show("topup")}else{show("auth")}};
+function refreshAuthUI(){$("loginBtn").textContent=user?("Log out ("+user.name+")"):"Log in";$("adminTab").style.display=(user&&user.role==="admin")?"inline-block":"none"}
+[].forEach.call($("pm").children,function(b){b.onclick=function(){pay=b.textContent;[].forEach.call($("pm").children,function(c){c.setAttribute("aria-pressed",c===b)});$("mfscash").style.display=pay==="Card"?"none":"block";$("mfscard").style.display=pay==="Card"?"block":"none"}});
+$("addm").onclick=function(){var a=parseInt($("amt").value,10);
+if(!(a>=50)){$("wmsg").textContent="Enter at least "+money(50)+".";return}
+var ref="";
+if(pay==="Card"){
+var num=$("cnum").value.replace(/\s+/g,"");
+if(!/^\d{12,19}$/.test(num)){$("wmsg").textContent="Enter a valid card number.";return}
+if(!/^\d{2}\/\d{2}$/.test($("cexp").value.trim())){$("wmsg").textContent="Enter expiry as MM/YY.";return}
+if(!/^\d{3,4}$/.test($("ccvc").value.trim())){$("wmsg").textContent="Enter a valid CVC.";return}
+ref="Card ending "+num.slice(-4);$("cnum").value="";$("cexp").value="";$("ccvc").value=""
+}else{
+if(!$("txnid").value.trim()){$("wmsg").textContent="Enter the transaction ID from your "+pay+" message.";return}
+ref="TrxID "+$("txnid").value.trim();$("txnid").value=""
+}
+bal+=a;tx.unshift("Added via "+pay+" ("+ref+"): +"+money(a));$("amt").value="";$("wmsg").textContent="Demo only: no real payment was made.";drawWallet()};
+function drawWallet(){$("bal").textContent=money(bal);$("txl").innerHTML=tx.length?tx.map(function(t){return"<div>"+t+"</div>"}).join(""):"No transactions yet."}
+var GOALS=[
+["Six pack","Abs are made in the kitchen too: eat enough protein and cut sugary drinks.",[["Plank","3 x 45 sec","21","plank"],["Leg raises","3 x 12","21","legraise"],["Bicycle crunch","3 x 20","21","crunch"]]],
+["Build muscle","Eat protein at every meal and sleep 7 to 8 hours.",[["Push-ups","4 x 12","30","pushup"],["Pull-ups or rows","4 x 8","30","pullup"],["Squats","4 x 15","21","squat"]]],
+["Lose fat","Walk daily and keep a small calorie deficit.",[["Jumping jacks","3 x 40 sec","14","jack"],["Mountain climbers","3 x 30 sec","14","climber"],["Brisk walk","30 min","30","walk"]]],
+["Stretching","Hold each stretch and never bounce.",[["Hamstring stretch","3 x 30 sec","7","hamstring"],["Cat and cow","10 slow reps","7","catcow"],["Shoulder stretch","3 x 30 sec","7","shoulder"]]],
+["Home workout","No equipment needed. Use a chair and a wall.",[["Chair dips","3 x 12","21","dip"],["Wall sit","3 x 40 sec","21","wallsit"],["Glute bridge","3 x 15","21","bridge"]]],
+["Gamer fitness","Take a 2 minute break every hour you play.",[["20-20-20 eye rule","every 20 min","ongoing","eye"],["Wrist circles","2 x 15","ongoing","wrist"],["Chest opener","3 x 30 sec","ongoing","chest"]]]];
+[].forEach.call(document.querySelectorAll("[data-g]"),function(b){b.onclick=function(){var g=GOALS[b.getAttribute("data-g")];
+$("gt").textContent=g[0];$("gtip").textContent=g[1]+" Warm up first, and stop if you feel pain.";
+$("gl").innerHTML=g[2].map(function(e){return'<div class="card ex"><span class="ph">'+ic(e[3])+'</span><div class="info"><h3>'+e[0]+"</h3><p>"+e[1]+'</p></div><span class="days">Do for<b>'+e[2]+' days</b></span></div>'}).join("");show("goal")}});
+$("back").onclick=function(){show("fitness")};
+var LB=[["Rakib_X",2480],["NightWolf",2310],["SaimFF",2195]];
+function drawLB(){
+$("lbBody").innerHTML=LB.slice().sort(function(a,b){return b[1]-a[1]}).map(function(r,i){return"<tr><td>"+(i+1)+"</td><td>"+r[0]+"</td><td>"+r[1].toLocaleString()+"</td></tr>"}).join("")}
+function drawLBAdmin(){
+$("lbAdmin").innerHTML=LB.map(function(r,i){return'<div class="prow"><input data-lbn="'+i+'" value="'+r[0]+'" style="width:150px"><input type="number" data-lbp="'+i+'" value="'+r[1]+'" style="width:90px"></div>'}).join("")}
+function drawFitAdmin(){
+$("fitAdmin").innerHTML=GOALS.map(function(g,gi){
+return '<div class="card" style="margin-bottom:10px"><h3 style="margin-top:0">'+g[0]+'</h3><textarea data-gt="'+gi+'" style="width:100%;min-height:50px;border:1.5px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);padding:8px;font:inherit">'+g[1]+'</textarea>'
++g[2].map(function(e,ei){return '<div class="prow"><span style="min-width:120px">'+e[0]+'</span><input data-en="'+gi+'-'+ei+'" value="'+e[1]+'" style="width:110px" placeholder="sets/reps"><input data-ed="'+gi+'-'+ei+'" value="'+e[2]+'" style="width:70px" placeholder="days"></div>'}).join("")
++'</div>'}).join("")}
+document.addEventListener("input",function(e){var t=e.target;
+if(t.hasAttribute("data-lbn")){LB[t.getAttribute("data-lbn")][0]=t.value;drawLB()}
+else if(t.hasAttribute("data-lbp")){var v=parseInt(t.value,10);LB[t.getAttribute("data-lbp")][1]=isNaN(v)?0:v;drawLB()}
+else if(t.hasAttribute("data-gt")){GOALS[t.getAttribute("data-gt")][1]=t.value}
+else if(t.hasAttribute("data-en")){var k=t.getAttribute("data-en").split("-");GOALS[k[0]][2][k[1]][1]=t.value}
+else if(t.hasAttribute("data-ed")){var k=t.getAttribute("data-ed").split("-");GOALS[k[0]][2][k[1]][2]=t.value}});
+
+function ic(t){
+var s='<svg viewBox="0 0 64 64" width="34" height="34" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">';
+var b={
+pushup:'<circle cx="14" cy="18" r="6"/><path d="M20 22 L50 40 M20 22 L15 36 M50 40 L58 34 M33 29 L27 46 M33 29 L41 48"/>',
+pullup:'<path d="M16 8 H48"/><circle cx="32" cy="18" r="6"/><path d="M32 24 V40 M32 26 L18 16 M32 26 L46 16 M32 40 L22 54 M32 40 L42 54"/>',
+squat:'<circle cx="32" cy="12" r="6"/><path d="M32 18 V32 M32 22 L18 26 M32 22 L46 26 M32 32 L20 50 M32 32 L44 50"/>',
+plank:'<circle cx="12" cy="20" r="6"/><path d="M18 22 L52 32 M18 22 L14 36 M52 32 L58 24 M34 27 L30 44 M34 27 L40 46"/>',
+legraise:'<circle cx="10" cy="40" r="6"/><path d="M16 40 H40 M40 40 L54 16 M40 40 L54 24 M22 40 L18 52 M22 40 L26 52"/>',
+crunch:'<circle cx="14" cy="34" r="6"/><path d="M20 36 L36 40 M36 40 L48 24 M36 40 L46 44 M20 36 L24 52 M20 36 L14 50"/>',
+jack:'<circle cx="32" cy="10" r="6"/><path d="M32 16 V34 M32 20 L14 10 M32 20 L50 10 M32 34 L14 54 M32 34 L50 54"/>',
+climber:'<circle cx="14" cy="16" r="6"/><path d="M20 20 L50 38 M20 20 L14 34 M50 38 L58 30 M35 28 L44 40 M35 28 L26 44"/>',
+walk:'<circle cx="30" cy="10" r="6"/><path d="M30 16 V34 M30 20 L16 26 M30 20 L44 14 M30 34 L18 52 M30 34 L42 48"/>',
+hamstring:'<circle cx="16" cy="14" r="6"/><path d="M16 20 V36 M16 22 L34 30 M16 36 L10 52 M16 36 L46 44"/>',
+catcow:'<circle cx="12" cy="30" r="6"/><path d="M18 32 H46 M18 32 L14 46 M46 32 L52 18 M30 32 L28 46 M30 32 L34 20"/>',
+shoulder:'<circle cx="32" cy="10" r="6"/><path d="M32 16 V38 M32 20 L48 26 M48 26 L44 14 M32 38 L22 54 M32 38 L42 54"/>',
+dip:'<path d="M8 42 H24 M40 42 H56"/><circle cx="32" cy="12" r="6"/><path d="M32 18 V34 M32 20 L16 30 M32 20 L48 30 M32 34 L24 50 M32 34 L40 50"/>',
+wallsit:'<path d="M44 8 V56"/><circle cx="24" cy="18" r="6"/><path d="M24 24 V36 M24 26 L38 30 M24 36 L16 50 M24 36 L34 48"/>',
+bridge:'<circle cx="12" cy="42" r="6"/><path d="M18 42 H34 M34 42 L48 26 M34 42 L48 46 M22 42 L26 54"/>',
+eye:'<circle cx="32" cy="24" r="10"/><circle cx="32" cy="24" r="3" fill="currentColor"/><path d="M18 24 Q32 12 46 24 Q32 36 18 24Z"/>',
+wrist:'<circle cx="24" cy="20" r="8"/><path d="M40 20 A16 16 0 1 1 34 8" /><path d="M34 8 L40 6 M34 8 L38 14"/>',
+chest:'<circle cx="32" cy="10" r="6"/><path d="M32 16 V32 M32 20 L12 12 M32 20 L52 12 M32 32 L22 54 M32 32 L42 54"/>'
+};
+return s+(b[t]||b.plank)+'</svg>'}
+
+var USERS={"admin@playfit.com":{pass:"admin123",name:"Admin",role:"admin"}};
+$("toSignup").onclick=function(){$("loginForm").style.display="none";$("signupForm").style.display="block"};
+$("toLogin").onclick=function(){$("signupForm").style.display="none";$("loginForm").style.display="block"};
+$("googleBtn").onclick=function(){$("lMsg").textContent="Google sign-in needs a real backend (OAuth). Wire this up once you add a server, e.g. with Firebase Auth."};
+$("doLogin").onclick=function(){
+var e=$("lEmail").value.trim().toLowerCase(),p=$("lPass").value;
+var u=USERS[e];
+if(!e||!p){$("lMsg").textContent="Enter your email and password.";return}
+if(!u||u.pass!==p){$("lMsg").textContent="No account found, or the password is wrong.";return}
+user={name:u.name,email:e,role:u.role};refreshAuthUI();$("lMsg").textContent="";show(user.role==="admin"?"admin":"topup")};
+$("doSignup").onclick=function(){
+var n=$("sName").value.trim(),e=$("sEmail").value.trim().toLowerCase(),p=$("sPass").value;
+if(!n||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){$("sMsg").textContent="Enter your name and a valid email.";return}
+if(p.length<6){$("sMsg").textContent="Password must be at least 6 characters.";return}
+if(USERS[e]){$("sMsg").textContent="An account already exists for this email. Try logging in.";return}
+USERS[e]={pass:p,name:n,role:"user"};user={name:n,email:e,role:"user"};refreshAuthUI();$("sMsg").textContent="";show("topup")};
+function drawAdmin(){
+var isAdmin=user&&user.role==="admin";
+$("adminLocked").style.display=isAdmin?"none":"block";
+$("adminBody").style.display=isAdmin?"block":"none";
+if(!isAdmin)return;
+var done=orders.filter(function(o){return o[5]==="Done"});
+$("stats").innerHTML=[["Orders",orders.length],["Done",done.length],["Revenue",money(done.reduce(function(s,o){return s+o[4]},0))]].map(function(x){return'<div class="card stat"><b>'+x[1]+"</b>"+x[0]+"</div>"}).join("");
+$("ord").innerHTML="<table><tr><th>ID</th><th>Game</th><th>Pack</th><th>Player</th><th>Status</th></tr>"+orders.map(function(o,i){return"<tr><td>"+o[0]+"</td><td>"+o[1]+"</td><td>"+o[2]+"</td><td>"+o[3]+'</td><td><select data-o="'+i+'">'+["Pending","Done","Failed"].map(function(t){return"<option"+(t===o[5]?" selected":"")+">"+t+"</option>"}).join("")+"</select></td></tr>"}).join("");
+$("prc").innerHTML=["pubg","ff"].map(function(k){return DATA[k].p.map(function(pk,i){return'<div class="prow"><span>'+(k==="pubg"?"PUBG ":"Free Fire ")+pk[0]+" "+DATA[k].n+'</span><input type="number" min="1" value="'+pk[1]+'" data-k="'+k+'" data-i="'+i+'"></div>'}).join("")}).join("");drawLBAdmin();drawFitAdmin()}
+document.addEventListener("change",function(e){var t=e.target;
+if(t.hasAttribute("data-o")){orders[t.getAttribute("data-o")][5]=t.value;drawAdmin()}
+else if(t.hasAttribute("data-k")){var v=parseInt(t.value,10);if(v>0){DATA[t.getAttribute("data-k")].p[t.getAttribute("data-i")][1]=v;render()}}});
+buy.onclick=function(){
+if(!/^\d{8,12}$/.test(uid.value.trim())){msg.textContent="Enter a player ID with 8 to 12 digits.";uid.focus();return}
+if(sel===null){msg.textContent="Choose a pack first.";return}
+var x=DATA[game].p[sel];
+if(bal<x[1]){msg.textContent="Not enough balance. Add money in Wallet first.";return}
+bal-=x[1];tx.unshift("Top-up "+x[0]+" "+DATA[game].n+": -"+money(x[1]));
+orders.unshift([String(1001+orders.length),game==="pubg"?"PUBG":"Free Fire",x[0]+" "+DATA[game].n,uid.value.trim(),x[1],"Pending"]);
+msg.textContent="Order placed. We will deliver it soon (demo)."};
+render();
+</script>
+</body>
+</html>
